@@ -1,0 +1,219 @@
+﻿
+@model IEnumerable<MVCAssignment.Models.SubCategory>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var categoryList = ViewBag.categorylist;
+
+}
+
+<h2 style="border-radius:20px;padding: 1%; margin-left: 30%; text-align: center; margin-bottom: 4%; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; width: 30% ">SUB-CATEGORY</h2>
+<button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#exampleAddModal">
+    Add SubCategory
+</button>
+<table id="SubCategoryTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubCategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.createdOn)
+            </th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.SubCategoryId">
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubCategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.createdOn)
+                </td>
+                <td>
+                    <button type="button" onclick="SubCatEdit(@item.SubCategoryId)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleEditModal">
+                        Edit
+                    </button>
+
+                    <button type="button" onclick="subCatDelete(@item.SubCategoryId)" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+@************************Delete Modal ***********@
+@*Button trigger modal
+    Modal*@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">DELETE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <input id="DelCategoryId" hidden />
+                    <h2> Are You Sure to Delete !</h2>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" id="DeleteSubCatData">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@************************Delete Modal End***********@
+
+@************************ADD Modal Start***********@
+
+<!-- Modal -->
+<div class="modal fade" id="exampleAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ADD SUB-CATEGORY</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <h4> <label>Category Name</label></h4>
+                    <select name="CategoryLst" id="categoryList1" class="form-control">
+                        <option value="">-----Choose Category Name ------</option>
+                        @foreach (var item in categoryList)
+                        {
+                            <option value="@item.CategoryName">@item.CategoryName</option>
+
+                        }
+                    </select>
+                    <br />
+                    <h4> <label>Sub-Category Name</label></h4>
+                    <input type="text" name="CategoryName" value="" placeholder="Sub-Category Name" style="width: 100%; padding: 5px;" id="editSubCatName" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="SaveCategory2" class="btn btn-primary">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@************************ADD Modal End***********@
+@************************EDIT Modal Start***********@
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SubCatModalLabel">Sub-Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4> <label>Category Name</label></h4>
+                <select name="CategoryLst" id="categoryEditList" class="form-control">
+                    @foreach (var item in categoryList)
+                    {
+                        <option value="@item.CategoryName">@item.CategoryName</option>
+
+                    }
+                </select>
+                <h4> <label>Sub-Category Name</label></h4>
+                <input type="text" name="CategoryName" value="" placeholder="Category Name" style="width: 100%; padding: 5px;" id="EditCatName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@************************ EDIT Modal End***********@
+
+<input type="hidden" id="hiddenSubCatid" name="" Catid" />
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#SubCategoryTable').DataTable();
+        });
+        $("#SaveCategory2").click(() => {
+            var categoryList1 = $("#categoryList1").val();
+            var editSubCatName = $("#editSubCatName").val();
+            $.ajax({
+                type: 'POST',
+                url: '/SubCategory/Insert',
+                data: { CategoryName: categoryList1, SubCategoryName: editSubCatName },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            })
+        });
+
+        function subCatDelete(SubCategoryId) {
+            $("#hiddenSubCatid").val(SubCategoryId);
+    }
+    $(document).ready(function () {
+        $("#DeleteSubCatData").click(() => {
+            var SubcatId = $("#hiddenSubCatid").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Delete","SubCategory")',
+                data: { id: SubcatId },
+                success: function (response) {
+                    $("#row_" + id).remove();
+                    console.log("Hello");
+                    debugger
+                }
+            })
+        });
+    })
+
+
+        var Editcategory;
+        function CatEdit(Category) {
+            Editcategory = JSON.parse(Category)
+            $("#EditCategoryName").val(Editcategory.CategoryName)
+            $("#CatEditId").val(Editcategory.CategoryId)
+
+        }
+        $("#EditCategoryData").click(() => {
+            var CatNameEdit = $("#EditCategoryName").val();
+            var id = $("#CatEditId").val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/Category/Edit',
+                data: { CategoryName: CatNameEdit, CategoryId: id },
+                success: function (response) {
+                    $("body").html(response);
+
+                }
+            })
+        });
+
+
+
+
+
+
+    </script>
+}
+

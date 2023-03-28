@@ -1,0 +1,233 @@
+﻿@model IEnumerable<MVCAssignment.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<h2 style="border-radius: 20px; margin-left: 40%; text-align: center; padding: 1%; margin-bottom: 4%; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; width: 20% ">PRODUCT</h2>
+<button type="button" class="btn btn-secondary mb-3
+        " data-bs-toggle="modal" data-bs-target="#ProductAddModal">
+    ADD PRODUCT
+</button>
+<table id="ProductTable">
+    <thead>
+        <tr>
+            <th>
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubCategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreadtedDate)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.ProductId">
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubCategoryName)
+                </td>
+                <td>
+                    @Html.DisplayNameFor(model => model.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayNameFor(model => model.ProductPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreadtedDate)
+                </td>
+                <td>
+                    <button type="button" onclick="CatEdit(@item.ProductId)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleEditModal">
+                        Edit
+                    </button>
+                    <button type="button" onclick="CatDelete(@item.ProductId)" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@************************Delete Modal ***********@
+@*Button trigger modal
+    Modal*@
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ProductModalModalLabel">DELETE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <input id="DelProductId" hidden />
+                    <h2> Are You Sure to Delete !</h2>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" id="DeleteProductData">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@************************Delete Modal End***********@
+@************************EDIT Modal Start***********@
+
+
+<!-- Modal -->
+<div class="modal fade" id="ProductEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ProductModalLabel">PRODUCT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4> <label>Category Name</label></h4>
+                <select id="CategoryName" class="form-control" value="Choose Category Name">
+                    
+                </select>
+                <h4> <label>Sub-Category Name</label></h4>
+                <select id="SubCategoryName" class="form-control">
+                    <option selected>Choose Sub-Category Name</option>
+                    <option> </option>
+                </select>
+                <h4> <label>Product Name</label></h4>
+                <input type="text" name="ProductName" value="" placeholder="Product Name" style="width: 100%; padding: 5px;" id="EditProductName" />
+                <h4> <label>Product Price</label></h4>
+                <input type="text" name="ProductPrice" value="" placeholder="Product Price" style="width: 100%; padding: 5px;" id="EditProductPrice" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@************************ EDIT Modal End***********@
+@************************ADD Modal Start***********@
+
+<!-- Modal -->
+<div class="modal fade" id="ProductAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ProductModalLabel">PRODUCT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-2">
+                <h4> <label>Category Name</label></h4>
+                <select id="AddCategoryName" class="form-control">
+                    <option selected>Choose Category Name</option>
+                    @{
+                        foreach (var item in ViewBag.Category)
+                        {
+                            <option value="@item.CategoryName">@item.CategoryName</option>
+                        }
+                    }
+                </select><br />
+                <h4> <label>Sub-Category Name</label></h4>
+                <select id="AddSubCategoryName" class="form-control">
+                    <option id="SubCategoryName" selected>Choose Sub-Category Name</option>
+                </select><br />
+                <h4> <label>Product Name</label></h4>
+                <input type="text" name="ProductName" value="" style="width: 100%; padding: 5px;" id="AddProductName" />
+                <br /><br />
+                <h4> <label>Product Price</label></h4>
+                <input type="text" name="ProductPrice" value="" style="width: 100%; padding: 5px;" id="AddProductPrice" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveProduct">Save changes</button>
+            </div>
+        </div>
+    </div>
+    @************************ADD Modal End***********@
+
+    @*<input type="hidden" id="hiddenCatid" name="" Catid" />*@
+    @section scripts {
+        <script>
+            $(document).ready(function () {
+                $('#ProductTable').DataTable();
+            });
+            $("#AddCategoryName").change(function () {
+
+                var Name = $("#AddCategoryName").val();
+                $.ajax({
+                    type: 'POST',
+                    url:'@Url.Action("GetSubCategory")',
+                    dataType: 'json',
+                    data: { Name: Name },
+                    success: function (subCategory) {
+                        $.each(subCategory, function (i,subCat) {
+                            $("#AddSubCategoryName").append('<option value="' + subCat.Value + '">' +
+                                subCat.Text + '</option>');
+                        });
+                    }
+                });
+
+
+
+            });
+        $("#saveProduct").click(() => {
+            var catProductName = $("#AddCategoryName").val();
+            var subCatProductName = $("#SubCategoryName").val();
+            var productName = $("#AddProductName").val();
+            var productPrice = $("#AddProductPrice").val();
+            $.ajax({
+                type: 'POST',
+                url: '/Product/Insert',
+                data: { CategoryName: catProductName, SubCategoryName: subCatProductName, ProductName: productName, ProductPrice: productPrice },
+                success: function (response) {
+                    $("body").html(response);
+                }
+            })
+        });
+
+    function CatDelete(CategoryId) {
+        $("#hiddenCatid").val(CategoryId);
+    }
+    $(document).ready(function () {
+        $("#DeleteData").click(() => {
+            var catId = $("#hiddenCatid").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Delete","Category")',
+                data: { id: catId },
+                success: function (response) {
+                    $("#row_" + id).remove();
+                    console.log("Hello");
+                    debugger
+                }
+            })
+        });
+
+    })
+
+
+
+        </script>
+    }
+
+</div>
